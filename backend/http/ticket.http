@@ -1,0 +1,26 @@
+###
+POST http://localhost:8080/AEC/tickets/create
+Content-Type: application/json
+
+{
+  "owner": "Max Mustermann",
+  "devaluated": false
+}
+
+###
+GET http://localhost:8080/AEC/tickets/getAll
+Content-Type: */*
+
+###
+GET http://localhost:8080/AEC/tickets/1
+Content-Type: application/json
+
+###
+POST http://localhost:8080/AEC/tickets/validate
+Content-Type: application/json
+
+{
+  "id": 1,
+  "owner": "Max Mustermann",
+  "devaluated": false
+}
