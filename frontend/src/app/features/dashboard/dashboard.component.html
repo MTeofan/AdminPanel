@@ -1,31 +1,35 @@
-<div>
-    <h1 class="text-3xl font-semibold mb-6">Dashboard</h1>
+<div class="page">
+    <h1>Dashboard</h1>
 
-    <div *ngIf="loading">Lade Tickets...</div>
-    <div *ngIf="error" class="text-red-600">{{ error }}</div>
-
-    <div *ngIf="!loading && !error">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-white p-6 rounded shadow text-center">
-                <div class="text-3xl font-bold">{{ tickets.length }}</div>
-                <div class="text-sm text-gray-600">Gesamtanzahl Tickets</div>
-            </div>
-            <div class="bg-white p-6 rounded shadow text-center">
-                <div class="text-3xl font-bold">{{ tickets | unique:'visitType' }}</div>
-                <div class="text-sm text-gray-600">Besuchsarten</div>
-            </div>
-            <div class="bg-white p-6 rounded shadow text-center">
-                <div class="text-3xl font-bold">{{ tickets | unique:'customerType' }}</div>
-                <div class="text-sm text-gray-600">Kundentypen</div>
-            </div>
+    <div class="stats-grid">
+        <div class="card">
+            <h2>💶 Tagesumsatz</h2>
+            <p class="value">{{ dailyRevenue | currency:'EUR' }}</p>
         </div>
 
-        <h2 class="text-xl font-semibold mb-4">Neueste Tickets</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div *ngFor="let ticket of tickets | slice:-6" class="bg-white p-4 rounded shadow">
-                <h3 class="font-semibold">{{ ticket.ticketNumber }}</h3>
-                <p>{{ ticket.visitType }} - {{ ticket.ticketType }}</p>
-            </div>
+        <div class="card">
+            <h2>👥 Kunden heute</h2>
+            <p class="value">{{ dailyCustomers }}</p>
         </div>
     </div>
+
+    <h2>Neueste Tickets</h2>
+    <table class="styled-table">
+        <thead>
+        <tr>
+            <th>Nummer</th>
+            <th>Besuchsart</th>
+            <th>Typ</th>
+            <th>Kunde</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let ticket of latestTickets">
+            <td>{{ ticket.ticketNumber }}</td>
+            <td>{{ ticket.visitType }}</td>
+            <td>{{ ticket.ticketType }}</td>
+            <td>{{ ticket.customerType }}</td>
+        </tr>
+        </tbody>
+    </table>
 </div>

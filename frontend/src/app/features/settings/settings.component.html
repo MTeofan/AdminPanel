@@ -1,1 +1,19 @@
-<p>settings works!</p>
+<div class="settings-page">
+    <h2>Einstellungen</h2>
+
+    <div class="settings-card">
+        <h3>Allgemein</h3>
+        <div class="setting-item">
+            <label for="darkmode">Dark Mode aktivieren</label>
+            <input type="checkbox" id="darkmode" [(ngModel)]="darkMode" />
+        </div>
+    </div>
+
+    <div class="settings-card">
+        <h3>Benachrichtigungen</h3>
+        <div class="setting-item">
+            <label for="notifications">E-Mail Benachrichtigungen</label>
+            <input type="checkbox" id="notifications" />
+        </div>
+    </div>
+</div>

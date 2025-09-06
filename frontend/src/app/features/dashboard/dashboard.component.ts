@@ -1,41 +1,41 @@
 import { Component, OnInit } from '@angular/core';
-import { Ticket } from '../../core/models/ticket.model';
-import {TicketService} from "../../core/services/ticket.service";
-import {NgForOf, NgIf, SlicePipe} from "@angular/common";
-import {UniquePipe} from "../../shared/pipe/unique.pipe";
+import { HttpClient } from '@angular/common/http';
+import {Ticket} from "../../core/models/ticket.model";
+import {CurrencyPipe, NgForOf} from "@angular/common";
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     imports: [
-        NgIf,
-        NgForOf,
-        SlicePipe,
-        UniquePipe
+        CurrencyPipe,
+        NgForOf
     ],
-    styleUrls: ['./dashboard.component.css']
+    styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-    tickets: Ticket[] = [];
-    loading = true;
-    error: string | null = null;
+    dailyRevenue = 0;
+    dailyCustomers = 0;
+    latestTickets: Ticket[] = [];
 
-    constructor(private ticketService: TicketService) {}
+    constructor(private http: HttpClient) {}
 
     ngOnInit(): void {
-        this.loadTickets();
+        this.loadStats();
+        this.loadLatestTickets();
     }
 
-    loadTickets() {
-        this.ticketService.getAllTickets().subscribe({
-            next: (data) => {
-                this.tickets = data;
-                this.loading = false;
+    loadStats(): void {
+        // 👉 Dummy-Werte – kann durch echtes Backend ersetzt werden
+        this.dailyRevenue = 1530;
+        this.dailyCustomers = 120;
+    }
+
+    loadLatestTickets(): void {
+        this.http.get<Ticket[]>('/api/tickets').subscribe({
+            next: (tickets) => {
+                this.latestTickets = tickets.slice(0, 5);
             },
-            error: (err) => {
-                this.error = 'Fehler beim Laden der Tickets';
-                this.loading = false;
-            }
+            error: (err) => console.error('Fehler beim Laden der Tickets', err)
         });
     }
 }

@@ -1,0 +1,104 @@
+:root {
+  --color-primary: #4B49AC;
+  --color-primary-light: #98BDFF;
+  --color-support-1: #7DAOFA;
+  --color-support-2: #7978E9;
+  --color-support-3: #F3797E;
+
+  --color-bg: #f9fafb;
+  --color-card: #ffffff;
+  --color-text: #1f2937;
+  --color-border: #e5e7eb;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  margin: 0;
+}
+
+h1, h2, h3 {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.page {
+  padding: 1.5rem;
+}
+.card {
+  background: var(--color-card);
+  border-radius: 0.5rem;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  margin-bottom: 1rem;
+}
+
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-card);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-top: 1rem;
+
+  th {
+    background: var(--color-primary);
+    color: white;
+    padding: 0.75rem;
+    text-align: left;
+  }
+
+  td {
+    padding: 0.75rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  tr:hover {
+    background-color: var(--color-primary-light);
+  }
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: var(--color-support-2);
+  }
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--color-support-1);
+  cursor: pointer;
+  font-weight: 500;
+
+  &.danger {
+    color: var(--color-support-3);
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+

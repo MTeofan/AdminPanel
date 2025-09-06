@@ -1,1 +1,13 @@
-<p>ticket-detail works!</p>
+<div class="page">
+    <h1>Ticketdetails</h1>
+
+    <div class="card" *ngIf="ticket">
+        <p><strong>Ticketnummer:</strong> {{ ticket.ticketNumber }}</p>
+        <p><strong>Besuchsart:</strong> {{ ticket.visitType }}</p>
+        <p><strong>Typ:</strong> {{ ticket.ticketType }}</p>
+        <p><strong>Kunde:</strong> {{ ticket.customerType }}</p>
+        <p><strong>Preisgruppe:</strong> {{ ticket.priceGroup }}</p>
+    </div>
+
+    <button class="btn-primary" routerLink="/tickets">Zurück</button>
+</div>

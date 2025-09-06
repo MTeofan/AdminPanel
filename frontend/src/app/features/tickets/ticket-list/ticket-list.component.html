@@ -1,1 +1,33 @@
-<p>ticket-list works!</p>
+<div class="page">
+    <h1>Tickets</h1>
+
+    <div class="actions">
+        <button class="btn-primary" routerLink="/tickets/new">Neues Ticket</button>
+    </div>
+
+    <table class="styled-table">
+        <thead>
+        <tr>
+            <th>Nummer</th>
+            <th>Besuchsart</th>
+            <th>Typ</th>
+            <th>Kunde</th>
+            <th>Preisgruppe</th>
+            <th>Aktionen</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let ticket of tickets">
+            <td>{{ ticket.ticketNumber }}</td>
+            <td>{{ ticket.visitType }}</td>
+            <td>{{ ticket.ticketType }}</td>
+            <td>{{ ticket.customerType }}</td>
+            <td>{{ ticket.priceGroup }}</td>
+            <td>
+                <button class="btn-link" [routerLink]="['/ticket', ticket.id]">Details</button>
+                <button class="btn-link danger" (click)="deleteTicket(ticket.id)">Löschen</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
