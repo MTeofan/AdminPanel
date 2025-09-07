@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {Component, OnInit} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 import {Ticket} from "../../core/models/ticket.model";
 import {CurrencyPipe, NgForOf} from "@angular/common";
 
@@ -17,7 +17,8 @@ export class DashboardComponent implements OnInit {
     dailyCustomers = 0;
     latestTickets: Ticket[] = [];
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) {
+    }
 
     ngOnInit(): void {
         this.loadStats();
@@ -25,7 +26,7 @@ export class DashboardComponent implements OnInit {
     }
 
     loadStats(): void {
-        // 👉 Dummy-Werte – kann durch echtes Backend ersetzt werden
+        // Dummy-Werte
         this.dailyRevenue = 1530;
         this.dailyCustomers = 120;
     }
