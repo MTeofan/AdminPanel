@@ -7,7 +7,6 @@ import {HeaderComponent} from "./shared/header/header/header.component";
     selector: 'app-root',
     templateUrl: './app.component.html',
     imports: [
-        DashboardComponent,
         RouterOutlet,
         HeaderComponent
     ],

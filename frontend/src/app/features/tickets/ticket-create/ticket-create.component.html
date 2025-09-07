@@ -1,0 +1,63 @@
+<div class="page">
+    <h1>Neues Ticket erstellen</h1>
+
+    <form (ngSubmit)="onSubmit()" #ticketForm="ngForm" class="form">
+        <div class="form-group">
+            <label for="ticketNumber">Ticketnummer</label>
+            <input
+                    id="ticketNumber"
+                    type="number"
+                    required
+                    [(ngModel)]="ticket.ticketNumber"
+                    name="ticketNumber"
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="visitType">Besuchsart</label>
+            <input
+                    id="visitType"
+                    type="text"
+                    required
+                    [(ngModel)]="ticket.visitType"
+                    name="visitType"
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="ticketType">Art des Tickets</label>
+            <input
+                    id="ticketType"
+                    type="text"
+                    required
+                    [(ngModel)]="ticket.ticketType"
+                    name="ticketType"
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="customerType">Kunde</label>
+            <input
+                    id="customerType"
+                    type="text"
+                    required
+                    [(ngModel)]="ticket.customerType"
+                    name="customerType"
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="priceGroup">Preisgruppe</label>
+            <input
+                    id="priceGroup"
+                    type="text"
+                    required
+                    [(ngModel)]="ticket.priceGroup"
+                    name="priceGroup"
+            />
+        </div>
+
+        <button type="submit" class="btn-primary">Speichern</button>
+        <button type="button" class="btn-link" routerLink="/tickets">Abbrechen</button>
+    </form>
+</div>

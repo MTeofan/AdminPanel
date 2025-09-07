@@ -26,11 +26,12 @@ h1, h2, h3 {
 .page {
   padding: 1.5rem;
 }
+
 .card {
   background: var(--color-card);
   border-radius: 0.5rem;
   padding: 1rem 1.5rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   margin-bottom: 1rem;
 }
 
@@ -102,3 +103,22 @@ h1, h2, h3 {
   margin-top: 0.5rem;
 }
 
+.snackbar-success {
+  background: #4B49AC;
+  color: #fff;
+}
+
+.snackbar-error {
+  background: #F3797E;
+  color: #fff;
+}
+
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

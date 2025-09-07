@@ -8,12 +8,12 @@ import {Ticket} from "../models/ticket.model";
 })
 export class TicketService {
 
-    private apiUrl = 'http://localhost:8080/tickets';
+    private apiUrl = 'http://localhost:3000/tickets'; // oder dein echtes Backend
 
     constructor(private http: HttpClient) {
     }
 
-    getAllTickets(): Observable<Ticket[]> {
+    getTickets(): Observable<Ticket[]> {
         return this.http.get<Ticket[]>(this.apiUrl);
     }
 
@@ -21,16 +21,21 @@ export class TicketService {
         return this.http.get<Ticket>(`${this.apiUrl}/${id}`);
     }
 
-    createTicket(ticket: Omit<Ticket, 'id'>): Observable<Ticket> {
+    createTicket(ticket: {
+        ticketNumber: string;
+        visitType: string;
+        ticketType: string;
+        customerType: string;
+        priceGroup: string
+    }): Observable<Ticket> {
         return this.http.post<Ticket>(this.apiUrl, ticket);
-    }
-
-    updateTicket(id: number, ticket: Ticket): Observable<Ticket> {
-        return this.http.put<Ticket>(`${this.apiUrl}/${id}`, ticket);
     }
 
     deleteTicket(id: number): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/${id}`);
     }
 
+    updateTicket(id: number, ticket: Ticket): Observable<Ticket> {
+        return this.http.put<Ticket>(`${this.apiUrl}/${id}`, ticket);
+    }
 }

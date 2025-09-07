@@ -1,8 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import {Router, RouterLink} from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import {Ticket} from "../../../core/models/ticket.model";
+import {TicketService} from "../../../core/services/ticket.service";
+import {RouterLink} from "@angular/router";
 import {NgForOf} from "@angular/common";
+
+interface Ticket {
+    id?: number;
+    ticketNumber: number;
+    visitType: string;
+    ticketType: string;
+    customerType: string;
+    priceGroup: string;
+}
 
 @Component({
     selector: 'app-ticket-list',
@@ -15,37 +23,66 @@ import {NgForOf} from "@angular/common";
 })
 export class TicketListComponent implements OnInit {
     tickets: Ticket[] = [];
-    loading = true;
 
-    constructor(private http: HttpClient, private router: Router) {}
+    // Dummy-Daten (werden nur verwendet, falls API nichts zurückgibt)
+    private dummyTickets: Ticket[] = [
+        {
+            id: 1,
+            ticketNumber: 12345,
+            visitType: 'Eintritt Wappensaal',
+            ticketType: '1 Erwachsener',
+            customerType: 'Standardbesucher',
+            priceGroup: 'Sonstige Besucher'
+        },
+        {
+            id: 2,
+            ticketNumber: 23456,
+            visitType: 'Führung Burg',
+            ticketType: 'Schulklasse',
+            customerType: 'Schüler',
+            priceGroup: 'Bildung'
+        },
+        {
+            id: 3,
+            ticketNumber: 34567,
+            visitType: 'Ausstellung',
+            ticketType: '2 Erwachsene',
+            customerType: 'Familie',
+            priceGroup: 'Standard'
+        }
+    ];
+
+    constructor(private ticketService: TicketService) {}
 
     ngOnInit(): void {
         this.loadTickets();
     }
 
-    loadTickets(): void {
-        this.loading = true;
-        this.http.get<Ticket[]>('/api/tickets').subscribe({
-            next: (data) => {
-                this.tickets = data;
-                this.loading = false;
+    loadTickets() {
+        this.ticketService.getTickets().subscribe({
+            next: (data: any) => {
+                if (data && data.length > 0) {
+                    this.tickets = data;
+                } else {
+                    // Falls API leer ist → Dummy Daten
+                    this.tickets = this.dummyTickets;
+                }
             },
-            error: (err) => {
-                console.error('Fehler beim Laden der Tickets', err);
-                this.loading = false;
+            error: () => {
+                // Falls API nicht erreichbar → Dummy Daten
+                this.tickets = this.dummyTickets;
             }
         });
     }
 
-    deleteTicket(id: number): void {
-        if (!confirm('Willst du dieses Ticket wirklich löschen?')) return;
-        this.http.delete(`/api/tickets/${id}`).subscribe({
-            next: () => this.loadTickets(),
-            error: (err) => console.error('Löschen fehlgeschlagen', err)
-        });
-    }
+    deleteTicket(id: number | undefined) {
+        if (!id) return;
 
-    goToDetails(id: number): void {
-        this.router.navigate(['/ticket', id]);
+        if (confirm('Bist du sicher, dass du dieses Ticket löschen willst?')) {
+            this.ticketService.deleteTicket(id).subscribe({
+                next: () => this.loadTickets(),
+                error: (err) => console.error('Fehler beim Löschen:', err)
+            });
+        }
     }
 }
