@@ -28,27 +28,83 @@ export class TicketListComponent implements OnInit {
     private dummyTickets: Ticket[] = [
         {
             id: 1,
-            ticketNumber: 12345,
-            visitType: 'Eintritt Wappensaal',
+            ticketNumber: 10001,
+            visitType: 'Eintritt Dauerausstellung',
             ticketType: '1 Erwachsener',
             customerType: 'Standardbesucher',
-            priceGroup: 'Sonstige Besucher'
+            priceGroup: 'Regulär'
         },
         {
             id: 2,
-            ticketNumber: 23456,
-            visitType: 'Führung Burg',
+            ticketNumber: 10002,
+            visitType: 'Führung Museum',
             ticketType: 'Schulklasse',
             customerType: 'Schüler',
             priceGroup: 'Bildung'
         },
         {
             id: 3,
-            ticketNumber: 34567,
-            visitType: 'Ausstellung',
-            ticketType: '2 Erwachsene',
+            ticketNumber: 10003,
+            visitType: 'Eintritt Sonderausstellung',
+            ticketType: '2 Erwachsene + 2 Kinder',
             customerType: 'Familie',
-            priceGroup: 'Standard'
+            priceGroup: 'Familienkarte'
+        },
+        {
+            id: 4,
+            ticketNumber: 10004,
+            visitType: 'Abendveranstaltung',
+            ticketType: '1 Student',
+            customerType: 'Student',
+            priceGroup: 'Ermäßigt'
+        },
+        {
+            id: 5,
+            ticketNumber: 10005,
+            visitType: 'Eintritt Deepspace',
+            ticketType: '1 Senior',
+            customerType: 'Standardbesucher',
+            priceGroup: 'Regulär'
+        },
+        {
+            id: 6,
+            ticketNumber: 10006,
+            visitType: 'Eintritt Deepspace',
+            ticketType: '3 Erwachsene',
+            customerType: 'Gruppe',
+            priceGroup: 'Gruppe'
+        },
+        {
+            id: 7,
+            ticketNumber: 10007,
+            visitType: 'Eintritt Dauerausstellung',
+            ticketType: '1 Erwachsener',
+            customerType: 'Besucher mit Gutschein',
+            priceGroup: 'Sonderaktion'
+        },
+        {
+            id: 8,
+            ticketNumber: 10008,
+            visitType: 'Familienführung',
+            ticketType: '1 Erwachsener + 3 Kinder',
+            customerType: 'Familie',
+            priceGroup: 'Familienkarte'
+        },
+        {
+            id: 9,
+            ticketNumber: 10009,
+            visitType: 'Workshop Kunst',
+            ticketType: '10 Personen',
+            customerType: 'Studierende',
+            priceGroup: 'Bildung'
+        },
+        {
+            id: 10,
+            ticketNumber: 10010,
+            visitType: 'Führung Museum',
+            ticketType: '1 Erwachsener',
+            customerType: 'Studierende',
+            priceGroup: 'Regulär'
         }
     ];
 

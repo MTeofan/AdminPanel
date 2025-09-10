@@ -1,5 +1,4 @@
 import {Component} from '@angular/core';
-import {DashboardComponent} from "./features/dashboard/dashboard.component";
 import {RouterOutlet} from "@angular/router";
 import {HeaderComponent} from "./shared/header/header/header.component";
 

@@ -5,4 +5,6 @@ export interface Ticket {
     ticketType: string;
     customerType: string;
     priceGroup: string;
+    validUntil?: string;
+    state?: string;
 }

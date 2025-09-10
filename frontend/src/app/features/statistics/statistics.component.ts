@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
-// import { TicketService, Ticket } from '../ticket.service'; // momentan nicht nötig
+// import { TicketService, Ticket } from '../ticket.service'; // jetzt nicht nötig
 
 Chart.register(...registerables);
 

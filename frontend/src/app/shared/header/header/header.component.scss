@@ -2,35 +2,31 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--color-primary);
+  background: #4B49AC;
   color: white;
-  padding: 0.75rem 1.5rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-
-  .logo {
-    font-weight: 600;
-    font-size: 1.2rem;
-  }
+  padding: 0.8rem 1.5rem;
 
   nav {
-    display: flex;
-    gap: 1rem;
+    flex-grow: 1;
+    text-align: center;
 
     a {
+      margin: 0 1rem;
       color: white;
       text-decoration: none;
       font-weight: 500;
-      padding: 0.4rem 0.8rem;
-      border-radius: 0.3rem;
-      transition: background 0.2s;
-
-      &:hover {
-        background: var(--color-support-2);
-      }
 
       &.active {
-        background: var(--color-support-1);
+        border-bottom: 2px solid #98BDFF;
       }
+    }
+  }
+
+  .logout {
+    margin-left: auto;
+
+    button {
+      color: white;
     }
   }
 }

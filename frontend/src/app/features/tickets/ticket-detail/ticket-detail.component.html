@@ -1,13 +1,51 @@
 <div class="page">
     <h1>Ticketdetails</h1>
 
-    <div class="card" *ngIf="ticket">
+    <div class="card" *ngIf="!editMode">
         <p><strong>Ticketnummer:</strong> {{ ticket.ticketNumber }}</p>
         <p><strong>Besuchsart:</strong> {{ ticket.visitType }}</p>
         <p><strong>Typ:</strong> {{ ticket.ticketType }}</p>
         <p><strong>Kunde:</strong> {{ ticket.customerType }}</p>
         <p><strong>Preisgruppe:</strong> {{ ticket.priceGroup }}</p>
+        <p><strong>Status:</strong> {{ ticket.state }}</p>
+        <p><strong>Gültig bis:</strong> {{ ticket.validUntil }}</p>
     </div>
 
-    <button class="btn-primary" routerLink="/tickets">Zurück</button>
+    <button class="btn btn-primary" (click)="editMode = !editMode">
+        {{ editMode ? 'Abbrechen' : 'Bearbeiten' }}
+    </button>
+
+    <form *ngIf="editMode" (ngSubmit)="saveChanges()" class="edit-form">
+        <label>Besuchsart:
+            <input type="text" [(ngModel)]="ticket.visitType" name="visitType" class="form-input">
+        </label><br>
+
+        <label>Typ:
+            <input type="text" [(ngModel)]="ticket.ticketType" name="ticketType" class="form-input">
+        </label><br>
+
+        <label>Kunde:
+            <input type="text" [(ngModel)]="ticket.customerType" name="customerType" class="form-input">
+        </label><br>
+
+        <label>Preisgruppe:
+            <input type="text" [(ngModel)]="ticket.priceGroup" name="priceGroup" class="form-input">
+        </label><br>
+
+        <label>Status:
+            <select [(ngModel)]="ticket.state" name="state" class="form-input">
+                <option value="valid">Valid</option>
+                <option value="used">Used</option>
+                <option value="expired">Expired</option>
+            </select>
+        </label><br>
+
+        <label>Gültig bis:
+            <input type="date" [(ngModel)]="ticket.validUntil" name="validUntil" class="form-input">
+        </label><br>
+
+        <button class="btn btn-success" type="submit">Speichern</button>
+    </form>
+
+    <button class="btn btn-secondary" routerLink="/tickets">Zurück</button>
 </div>
