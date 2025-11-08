@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TicketService} from "../../../core/services/ticket.service";
 import {RouterLink} from "@angular/router";
 import {NgForOf} from "@angular/common";
@@ -15,16 +15,13 @@ interface Ticket {
 @Component({
     selector: 'app-ticket-list',
     templateUrl: './ticket-list.component.html',
-    imports: [
-        RouterLink,
-        NgForOf
-    ],
+    imports: [RouterLink, NgForOf],
     styleUrls: ['./ticket-list.component.scss']
 })
-export class TicketListComponent implements OnInit {
+export class TicketListComponent implements OnInit, OnDestroy {
     tickets: Ticket[] = [];
 
-    // Dummy-Daten (werden nur verwendet, falls API nichts zurückgibt)
+    // Dummy-Daten (nur wenn API leer oder Fehler)
     private dummyTickets: Ticket[] = [
         {
             id: 1,
@@ -108,35 +105,31 @@ export class TicketListComponent implements OnInit {
         }
     ];
 
-    constructor(private ticketService: TicketService) {}
-
-    ngOnInit(): void {
-        this.loadTickets();
+    constructor(private ticketService: TicketService) {
     }
 
-    loadTickets() {
-        this.ticketService.getTickets().subscribe({
-            next: (data: any) => {
-                if (data && data.length > 0) {
-                    this.tickets = data;
-                } else {
-                    // Falls API leer ist → Dummy Daten
-                    this.tickets = this.dummyTickets;
-                }
-            },
-            error: () => {
-                // Falls API nicht erreichbar → Dummy Daten
+    ngOnInit(): void {
+        this.ticketService.startLiveUpdates();
+
+        this.ticketService.tickets$.subscribe(list => {
+            if (Array.isArray(list) && list.length > 0) {
+                this.tickets = list;
+            } else {
+                // Dummy-Daten anzeigen, wenn Liste leer/Fehler
                 this.tickets = this.dummyTickets;
             }
         });
     }
 
+    ngOnDestroy(): void {
+        this.ticketService.stopLiveUpdates();
+    }
+
     deleteTicket(id: number | undefined) {
         if (!id) return;
-
         if (confirm('Bist du sicher, dass du dieses Ticket löschen willst?')) {
             this.ticketService.deleteTicket(id).subscribe({
-                next: () => this.loadTickets(),
+                next: () => this.ticketService.loadOnce().subscribe(), // nach dem Löschen neu laden
                 error: (err) => console.error('Fehler beim Löschen:', err)
             });
         }
