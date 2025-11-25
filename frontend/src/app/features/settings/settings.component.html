@@ -5,7 +5,11 @@
         <h3>Allgemein</h3>
         <div class="setting-item">
             <label for="darkmode">Dark Mode aktivieren</label>
-            <input type="checkbox" id="darkmode" [(ngModel)]="darkMode" />
+            <input
+                    type="checkbox"
+                    id="darkmode"
+                    [(ngModel)]="darkMode"
+                    (change)="toggleDarkMode()"/>
         </div>
     </div>
 
@@ -13,7 +17,11 @@
         <h3>Benachrichtigungen</h3>
         <div class="setting-item">
             <label for="notifications">E-Mail Benachrichtigungen</label>
-            <input type="checkbox" id="notifications" />
+            <input
+                    type="checkbox"
+                    id="notifications"
+                    [(ngModel)]="emailNotifications"
+                    (change)="toggleEmail()"/>
         </div>
     </div>
 </div>
