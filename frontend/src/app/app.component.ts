@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {RouterOutlet} from "@angular/router";
 import {HeaderComponent} from "./shared/header/header/header.component";
+import {SettingsService} from "./core/services/settings.service";
 
 @Component({
     selector: 'app-root',
@@ -12,5 +13,7 @@ import {HeaderComponent} from "./shared/header/header/header.component";
     styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'frontend';
+    constructor(private settings: SettingsService) {
+        this.settings.initOnAppStart();
+    }
 }
