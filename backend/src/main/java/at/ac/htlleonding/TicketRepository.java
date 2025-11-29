@@ -38,21 +38,21 @@ public class TicketRepository {
 
     public List<Ticket> getTicketsByVisitType(String visitType) {
         return entityManager.createQuery(
-                        "SELECT t FROM Ticket t WHERE t.visitType = :visitType", Ticket.class)
+                        "SELECT t FROM Ticket t WHERE t.visitType = :visitType ORDER BY t.id DESC", Ticket.class)
                 .setParameter("visitType", visitType)
                 .getResultList();
     }
 
     public List<Ticket> getTicketsByPriceGroup(String priceGroup) {
         return entityManager.createQuery(
-                        "SELECT t FROM Ticket t WHERE t.priceGroup = :priceGroup", Ticket.class)
+                        "SELECT t FROM Ticket t WHERE t.priceGroup = :priceGroup ORDER BY t.id DESC", Ticket.class)
                 .setParameter("priceGroup", priceGroup)
                 .getResultList();
     }
 
     public List<Ticket> getTicketsByCustomer(String customerType) {
         return entityManager.createQuery(
-                        "SELECT t FROM Ticket t WHERE t.customerType = :customerType", Ticket.class)
+                        "SELECT t FROM Ticket t WHERE t.customerType = :customerType ORDER BY t.id DESC", Ticket.class)
                 .setParameter("customerType", customerType)
                 .getResultList();
     }

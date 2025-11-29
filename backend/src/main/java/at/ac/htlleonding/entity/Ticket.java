@@ -1,10 +1,21 @@
 package at.ac.htlleonding.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.math.BigDecimal;
+import java.time.Instant;
 
 @Entity
+@Table(
+        name = "Ticket",
+        indexes = {
+                @Index(name = "ux_ticket_ticketNumber", columnList = "ticketNumber", unique = true)
+        }
+)
 @NamedQueries({
-        @NamedQuery(name = Ticket.QUERY_FIND_ALL, query = "select t from Ticket t"),
+        @NamedQuery(name = Ticket.QUERY_FIND_ALL, query = "SELECT t FROM Ticket t ORDER BY t.createdAt DESC")
 })
 public class Ticket {
 
@@ -22,6 +33,14 @@ public class Ticket {
     private String customerType;
     private String priceGroup;
 
+    @CreationTimestamp
+    @Column(updatable = false, nullable = false)
+    private Instant createdAt;
+
+    @UpdateTimestamp
+    @Column(nullable = false)
+    private Instant updatedAt;
+
     public Ticket() {
     }
 
@@ -33,6 +52,7 @@ public class Ticket {
         this.priceGroup = priceGroup;
     }
 
+    //<editor-fold desc="getter & setter">
     public Long getId() {
         return id;
     }
@@ -80,4 +100,18 @@ public class Ticket {
     public void setPriceGroup(String priceGroup) {
         this.priceGroup = priceGroup;
     }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+    //</editor-fold>
+
 }

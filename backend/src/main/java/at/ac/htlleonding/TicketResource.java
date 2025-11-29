@@ -2,6 +2,7 @@ package at.ac.htlleonding;
 
 import at.ac.htlleonding.entity.Ticket;
 import at.ac.htlleonding.entity.TicketDTO;
+import at.ac.htlleonding.ws.TicketSocket;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -18,13 +19,13 @@ public class TicketResource {
     @Inject
     TicketRepository ticketRepository;
 
+    @Inject
+    TicketSocket socket;
+
     @GET
     public Response getAllTickets() {
         List<Ticket> tickets = ticketRepository.getAllTickets();
-        if (tickets.isEmpty()) {
-            return Response.noContent().build();
-        }
-        return Response.ok(tickets).build();
+        return Response.ok(tickets == null ? List.of() : tickets).build();
     }
 
     @GET
@@ -41,36 +42,40 @@ public class TicketResource {
     @Path("/visitType/{visitType}")
     public Response getTicketsByVisitType(@PathParam("visitType") String visitType) {
         List<Ticket> tickets = ticketRepository.getTicketsByVisitType(visitType);
-        if (tickets.isEmpty()) {
-            return Response.noContent().build();
-        }
-        return Response.ok(tickets).build();
+        return Response.ok(tickets == null ? List.of() : tickets).build();
     }
 
     @GET
     @Path("/priceGroup/{priceGroup}")
     public Response getTicketsByPriceGroup(@PathParam("priceGroup") String priceGroup) {
         List<Ticket> tickets = ticketRepository.getTicketsByPriceGroup(priceGroup);
-        if (tickets.isEmpty()) {
-            return Response.noContent().build();
-        }
-        return Response.ok(tickets).build();
+        return Response.ok(tickets == null ? List.of() : tickets).build();
     }
 
     @GET
     @Path("/customer/{customer}")
     public Response getTicketsByCustomer(@PathParam("customer") String customer) {
         List<Ticket> tickets = ticketRepository.getTicketsByCustomer(customer);
-        if (tickets.isEmpty()) {
-            return Response.noContent().build();
-        }
-        return Response.ok(tickets).build();
+        return Response.ok(tickets == null ? List.of() : tickets).build();
     }
 
     @POST
     public Response createTicket(TicketDTO ticketDTO) {
         Ticket ticket = ticketRepository.createTicket(ticketDTO);
+        //socket.broadcast("ticket-created", ticket.getId());
         return Response.status(Response.Status.CREATED).entity(ticket).build();
+    }
+
+    @PUT
+    @Path("/{id}")
+    @Transactional
+    public Response updateTicketById(@PathParam("id") Long id, TicketDTO ticketDTO) {
+        Ticket updatedTicket = ticketRepository.updateTicket(id, ticketDTO);
+        if (updatedTicket == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        //socket.broadcast("ticket-updated", updatedTicket.getId());
+        return Response.ok(updatedTicket).build();
     }
 
     @DELETE
@@ -82,17 +87,7 @@ public class TicketResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         ticketRepository.deleteTicket(ticket);
+        //socket.broadcast("ticket-deleted", id);
         return Response.noContent().build();
-    }
-
-    @PUT
-    @Path("/{id}")
-    @Transactional
-    public Response updateTicketById(@PathParam("id") Long id, TicketDTO ticketDTO) {
-        Ticket updatedTicket = ticketRepository.updateTicket(id, ticketDTO);
-        if (updatedTicket == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return Response.ok(updatedTicket).build();
     }
 }

@@ -1,11 +1,16 @@
 <div class="page">
     <h1>Statistiken</h1>
 
-    <div class="chart-container">
-        <canvas id="barChart"></canvas>
+    <div class="card" style="margin-bottom:1rem;">
+        <div><strong>Woche:</strong> {{ weekStartISO }} – {{ weekEndISO }}</div>
+        <div><strong>Gesamt (Mo–So):</strong> {{ totalWeek }}</div>
     </div>
 
     <div class="chart-container">
-        <canvas id="pieChart"></canvas>
+        <canvas id="barChart" aria-label="Kunden pro Tag (Montag–Sonntag)"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="pieChart" aria-label="Kundentypen in dieser Woche"></canvas>
     </div>
 </div>

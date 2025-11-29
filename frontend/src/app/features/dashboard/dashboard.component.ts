@@ -1,42 +1,39 @@
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
 import {Ticket} from "../../core/models/ticket.model";
-import {CurrencyPipe, NgForOf} from "@angular/common";
+import {CurrencyPipe, NgForOf, NgIf} from "@angular/common";
+import {Subscription} from "rxjs";
+import {TicketService} from "../../core/services/ticket.service";
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     imports: [
         CurrencyPipe,
-        NgForOf
+        NgForOf,
+        NgIf
     ],
     styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-    dailyRevenue = 0;
+    dailyRevenue = 1530;
     dailyCustomers = 0;
     latestTickets: Ticket[] = [];
+    private subs: Subscription[] = [];
 
-    constructor(private http: HttpClient) {
-    }
+    constructor(private ticketService: TicketService) {}
 
     ngOnInit(): void {
-        this.loadStats();
-        this.loadLatestTickets();
+        this.subs.push(
+            this.ticketService.getTodayCustomerCount().subscribe(n => this.dailyCustomers = n)
+        );
+        this.subs.push(
+            this.ticketService.tickets$.subscribe(list => {
+                this.latestTickets = (list ?? []).slice(0, 15);
+            })
+        );
     }
 
-    loadStats(): void {
-        // Dummy-Werte
-        this.dailyRevenue = 1530;
-        this.dailyCustomers = 120;
-    }
-
-    loadLatestTickets(): void {
-        this.http.get<Ticket[]>('/api/tickets').subscribe({
-            next: (tickets) => {
-                this.latestTickets = tickets.slice(0, 5);
-            },
-            error: (err) => console.error('Fehler beim Laden der Tickets', err)
-        });
+    ngOnDestroy(): void {
+        this.subs.forEach(s => s.unsubscribe());
     }
 }

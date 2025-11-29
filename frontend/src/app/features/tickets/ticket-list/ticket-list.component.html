@@ -5,39 +5,43 @@
         <button class="btn-primary" routerLink="/tickets/new">Neues Ticket</button>
     </div>
 
-    <!-- Such-/Filterleiste -->
     <form [formGroup]="filters" class="filterbar">
-        <input type="search" placeholder="Suchen (Nr., Besuchsart, Typ, Kunde, Preis...)" formControlName="query"/>
+        <input type="search" placeholder="Suchen (Nr., Besuchsart, Typ, Kunde, Preisgruppe)" formControlName="query"/>
         <input type="text" placeholder="Besuchsart" formControlName="visitType"/>
         <input type="text" placeholder="Preisgruppe" formControlName="priceGroup"/>
-        <button type="button" class="btn-link" (click)="filters.reset({query:'',visitType:'',priceGroup:''})">
+        <button type="button" class="btn-link" (click)="filters.reset({query:'', visitType:'', priceGroup:''})">
             Zurücksetzen
         </button>
     </form>
 
-    <table class="styled-table">
-        <thead>
-        <tr>
-            <th>Nummer</th>
-            <th>Besuchsart</th>
-            <th>Typ</th>
-            <th>Kunde</th>
-            <th>Preisgruppe</th>
-            <th>Aktionen</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let ticket of (filtered$ | async); trackBy: trackId">
-            <td>{{ ticket.ticketNumber }}</td>
-            <td>{{ ticket.visitType }}</td>
-            <td>{{ ticket.ticketType }}</td>
-            <td>{{ ticket.customerType }}</td>
-            <td>{{ ticket.priceGroup }}</td>
-            <td>
-                <button class="btn-link" [routerLink]="['/ticket', ticket.id]">Details</button>
-                <button class="btn-link danger" (click)="deleteTicket(ticket.id)">Löschen</button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <ng-container *ngIf="filtered$ | async as tickets">
+        <table class="styled-table" *ngIf="tickets.length > 0; else noData">
+            <thead>
+            <tr>
+                <th>Nummer</th>
+                <th>Besuchsart</th>
+                <th>Typ</th>
+                <th>Kunde</th>
+                <th>Preisgruppe</th>
+                <th>Aktionen</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let ticket of tickets; trackBy: trackId">
+                <td>{{ ticket.ticketNumber }}</td>
+                <td>{{ ticket.visitType }}</td>
+                <td>{{ ticket.ticketType }}</td>
+                <td>{{ ticket.customerType }}</td>
+                <td>{{ ticket.priceGroup }}</td>
+                <td>
+                    <button class="btn-link" [routerLink]="['/ticket', ticket.id]">Details</button>
+                    <button class="btn-link danger" (click)="deleteTicket(ticket.id)">Löschen</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <ng-template #noData>
+            <div class="card">Keine Tickets vorhanden.</div>
+        </ng-template>
+    </ng-container>
 </div>
