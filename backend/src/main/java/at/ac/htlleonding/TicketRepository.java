@@ -2,6 +2,7 @@ package at.ac.htlleonding;
 
 import at.ac.htlleonding.entity.Ticket;
 import at.ac.htlleonding.entity.TicketDTO;
+import at.ac.htlleonding.ws.TicketSocket;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -15,6 +16,9 @@ public class TicketRepository {
     @Inject
     EntityManager entityManager;
 
+    @Inject
+    TicketSocket ticketSocket;
+
     public List<Ticket> getAllTickets() {
         return this.entityManager
                 .createNamedQuery(Ticket.QUERY_FIND_ALL, Ticket.class)
@@ -27,11 +31,17 @@ public class TicketRepository {
 
     @Transactional
     public Ticket createTicket(TicketDTO ticketDTO) {
-        Ticket ticket = new Ticket( ticketDTO.ticketNumber(), ticketDTO.visitType(), ticketDTO.ticketType(), ticketDTO.customerType(), ticketDTO.priceGroup());
+        Ticket ticket = new Ticket(
+                ticketDTO.ticketNumber(),
+                ticketDTO.visitType(),
+                ticketDTO.ticketType(),
+                ticketDTO.customerType(),
+                ticketDTO.priceGroup()
+        );
+        entityManager.persist(ticket);
+        entityManager.flush();
 
-        this.entityManager.persist(ticket);
-
-        // TODO: Generate QR code that saves the ticket as JSON and store as PNG
+        ticketSocket.notifyCreated(ticket.getId());
 
         return ticket;
     }
@@ -59,7 +69,12 @@ public class TicketRepository {
 
     @Transactional
     public void deleteTicket(Ticket ticket) {
+        Long id = ticket.getId();
         entityManager.remove(entityManager.contains(ticket) ? ticket : entityManager.merge(ticket));
+        entityManager.flush();
+        if (id != null) {
+            ticketSocket.notifyDeleted(id);
+        }
     }
 
     @Transactional
@@ -73,6 +88,10 @@ public class TicketRepository {
         ticket.setTicketType(ticketDTO.ticketType());
         ticket.setCustomerType(ticketDTO.customerType());
         ticket.setPriceGroup(ticketDTO.priceGroup());
-        return entityManager.merge(ticket);
+
+        Ticket merged = entityManager.merge(ticket);
+        entityManager.flush();
+        ticketSocket.notifyUpdated(merged.getId());
+        return merged;
     }
 }

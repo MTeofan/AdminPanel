@@ -19,7 +19,7 @@ export interface WeeklyCustomerCounts {
 @Injectable({providedIn: 'root'})
 export class TicketService implements OnDestroy {
     private apiUrl = 'http://localhost:8080/tickets';
-    private wsUrl = this.apiUrl.replace(/^http/, 'ws').replace(/\/tickets$/, '/tickets/ws');
+    private wsUrl = 'ws://localhost:8080/tickets/updates';
 
     private ws?: WebSocket;
     private wsReconnectAttempts = 0;
@@ -108,16 +108,33 @@ export class TicketService implements OnDestroy {
         if (this.ws) return;
         try {
             this.ws = new WebSocket(this.wsUrl);
+
             this.ws.onopen = () => {
                 this.wsReconnectAttempts = 0;
+                console.log('[WS] connected');
             };
-            this.ws.onmessage = () => {
-                this.loadOnce().subscribe();
+
+            this.ws.onmessage = (event: MessageEvent<string>) => {
+                try {
+                    const data = JSON.parse(event.data);
+
+                    if (data && data.type === 'TICKET_CREATED') {
+                        this.loadOnce().subscribe();
+                    } else {
+                        console.log('[WS] Ignored message', data);
+                    }
+                } catch {
+                    console.warn('[WS] Non-JSON message', event.data);
+                }
             };
+
             this.ws.onerror = () => {
+                console.error('[WS] error');
                 this.scheduleWsReconnect();
             };
+
             this.ws.onclose = () => {
+                console.warn('[WS] closed');
                 this.scheduleWsReconnect();
             };
         } catch {
@@ -139,7 +156,10 @@ export class TicketService implements OnDestroy {
 
     private teardownWs(): void {
         if (this.ws) {
-            try { this.ws.close(); } catch {}
+            try {
+                this.ws.close();
+            } catch {
+            }
             this.ws = undefined;
         }
     }
@@ -171,9 +191,9 @@ export class TicketService implements OnDestroy {
     }
 
     private readonly tz = 'Europe/Vienna';
-    private readonly isoFmt = new Intl.DateTimeFormat('sv-SE', { timeZone: this.tz });
-    private readonly weekdayFmt = new Intl.DateTimeFormat('en-GB', { timeZone: this.tz, weekday: 'short' });
-    private readonly wdOrder = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] as const;
+    private readonly isoFmt = new Intl.DateTimeFormat('sv-SE', {timeZone: this.tz});
+    private readonly weekdayFmt = new Intl.DateTimeFormat('en-GB', {timeZone: this.tz, weekday: 'short'});
+    private readonly wdOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const;
 
     private localDateVienna(iso?: string | null): string | null {
         if (!iso) return null;
@@ -192,7 +212,7 @@ export class TicketService implements OnDestroy {
         const idx = this.wdOrder.indexOf(wd as any);
         const shift = idx < 0 ? 0 : idx;
         const copy = new Date(base.getTime());
-        copy.setHours(0,0,0,0);
+        copy.setHours(0, 0, 0, 0);
         copy.setDate(copy.getDate() - shift);
         return this.isoFmt.format(copy);
     }
@@ -205,7 +225,7 @@ export class TicketService implements OnDestroy {
     }
 
     private buildWeekDays(mondayIso: string): { date: string; weekday: WeekDayCount['weekday'] }[] {
-        return this.wdOrder.map((wd, i) => ({ date: this.addDaysIso(mondayIso, i), weekday: wd }));
+        return this.wdOrder.map((wd, i) => ({date: this.addDaysIso(mondayIso, i), weekday: wd}));
     }
 
     private isIsoDate(s: string): boolean {

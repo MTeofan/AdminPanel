@@ -2,9 +2,7 @@ package at.ac.htlleonding;
 
 import at.ac.htlleonding.entity.Ticket;
 import at.ac.htlleonding.entity.TicketDTO;
-import at.ac.htlleonding.ws.TicketSocket;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -18,9 +16,6 @@ public class TicketResource {
 
     @Inject
     TicketRepository ticketRepository;
-
-    @Inject
-    TicketSocket socket;
 
     @GET
     public Response getAllTickets() {
@@ -62,32 +57,27 @@ public class TicketResource {
     @POST
     public Response createTicket(TicketDTO ticketDTO) {
         Ticket ticket = ticketRepository.createTicket(ticketDTO);
-        //socket.broadcast("ticket-created", ticket.getId());
         return Response.status(Response.Status.CREATED).entity(ticket).build();
     }
 
     @PUT
     @Path("/{id}")
-    @Transactional
     public Response updateTicketById(@PathParam("id") Long id, TicketDTO ticketDTO) {
         Ticket updatedTicket = ticketRepository.updateTicket(id, ticketDTO);
         if (updatedTicket == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        //socket.broadcast("ticket-updated", updatedTicket.getId());
         return Response.ok(updatedTicket).build();
     }
 
     @DELETE
     @Path("/{id}")
-    @Transactional
     public Response deleteTicket(@PathParam("id") Long id) {
         Ticket ticket = ticketRepository.getTicketById(id);
         if (ticket == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         ticketRepository.deleteTicket(ticket);
-        //socket.broadcast("ticket-deleted", id);
         return Response.noContent().build();
     }
 }

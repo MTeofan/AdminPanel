@@ -5,9 +5,6 @@
 -- insert into myentity (id, field) values(3, 'field-3');
 -- alter sequence myentity_seq restart with 4;
 
--- import.sql — Seed-Daten für Woche Mo–So (24.–30.11.2025)
--- Hinweis: Tabelle heißt unquoted "Ticket" -> in H2 case-insensitive.
-
 -- Montag (4 Tickets) — 24.11.2025
 INSERT INTO Ticket (ticketNumber, visitType, ticketType, customerType, priceGroup, createdAt, updatedAt)
 VALUES (50001, 'Eintritt Dauerausstellung', '1 Erwachsener', 'Standardbesucher', 'Regulär',
