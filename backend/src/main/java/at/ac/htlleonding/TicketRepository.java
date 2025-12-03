@@ -46,6 +46,22 @@ public class TicketRepository {
         return ticket;
     }
 
+    @Transactional
+    public Ticket scanTicket(TicketDTO ticketDTO) {
+        List<Ticket> existing = entityManager.createQuery(
+                        "SELECT t FROM Ticket t WHERE t.ticketNumber = :ticketNumber",
+                        Ticket.class)
+                .setParameter("ticketNumber", ticketDTO.ticketNumber())
+                .getResultList();
+
+        if (!existing.isEmpty()) {
+            return null;
+        }
+
+        return createTicket(ticketDTO);
+    }
+
+
     public List<Ticket> getTicketsByVisitType(String visitType) {
         return entityManager.createQuery(
                         "SELECT t FROM Ticket t WHERE t.visitType = :visitType ORDER BY t.id DESC", Ticket.class)

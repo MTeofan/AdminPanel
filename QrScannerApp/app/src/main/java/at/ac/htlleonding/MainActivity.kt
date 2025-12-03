@@ -26,12 +26,14 @@ class MainActivity : AppCompatActivity() {
 
     private val client = OkHttpClient()
 
-    private val backendUrl = "http://10.0.2.2:8080/tickets/scan" // Emulator; echtes Gerät: LAN-IP
+    private val backendUrl = "http://10.0.2.2:8080/tickets/scan"
 
-    // Debounce gegen Doppel Scans
+    // Debounce gegen Doppel-Scans
     private var lastContent: String? = null
     private var lastTime: Long = 0
     private val debounceMs = 2000L
+
+    private var scanningEnabled = true
 
     private val askCameraPermission = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -66,6 +68,8 @@ class MainActivity : AppCompatActivity() {
             override fun barcodeResult(result: BarcodeResult?) {
                 val text = result?.text ?: return
 
+                if (!scanningEnabled) return
+
                 val now = System.currentTimeMillis()
                 if (text == lastContent && now - lastTime < debounceMs) {
                     return
@@ -74,8 +78,9 @@ class MainActivity : AppCompatActivity() {
                 lastContent = text
                 lastTime = now
 
-                showStatus("Gescannter Code: $text", neutral = true)
+                scanningEnabled = false
 
+                showStatus("Gescannter Code: $text", neutral = true)
                 sendToBackend(text)
             }
 
@@ -83,7 +88,6 @@ class MainActivity : AppCompatActivity() {
                 // ignorieren
             }
         })
-
         binding.barcodeScanner.resume()
     }
 
@@ -97,6 +101,7 @@ class MainActivity : AppCompatActivity() {
      *   "priceGroup": "Regulär"
      * }
      */
+
     private fun sendToBackend(content: String) {
         val json = content.trim()
 
@@ -113,18 +118,33 @@ class MainActivity : AppCompatActivity() {
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 showStatus("Server nicht erreichbar", success = false)
+
+                binding.root.postDelayed({
+                    scanningEnabled = true
+                }, debounceMs)
             }
 
             override fun onResponse(call: Call, response: Response) {
-                val ok = response.isSuccessful
                 val code = response.code
+                val ok = response.isSuccessful
                 response.close()
 
-                if (ok) {
-                    showStatus("Scan erfolgreich (HTTP $code)", success = true)
-                } else {
-                    showStatus("Ticket nicht erkannt (HTTP $code)", success = false)
+                when {
+                    ok -> {
+                        showStatus("Scan erfolgreich", success = true)
+                    }
+
+                    code == 409 -> {
+                        showStatus("Ticket bereits gescannt", success = false)
+                    }
+
+                    else -> {
+                        showStatus("Ticket nicht erkannt (HTTP $code)", success = false)
+                    }
                 }
+                binding.root.postDelayed({
+                    scanningEnabled = true
+                }, debounceMs)
             }
         })
     }
@@ -138,7 +158,6 @@ class MainActivity : AppCompatActivity() {
                 success == true -> Color.parseColor("#4CAF50")
                 else -> Color.parseColor("#F44336")
             }
-
             binding.statusText.setTextColor(color)
         }
     }

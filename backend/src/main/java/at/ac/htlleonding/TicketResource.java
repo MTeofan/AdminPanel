@@ -60,6 +60,19 @@ public class TicketResource {
         return Response.status(Response.Status.CREATED).entity(ticket).build();
     }
 
+    @POST
+    @Path("/scan")
+    public Response scanTicket(TicketDTO ticketDTO) {
+        Ticket ticket = ticketRepository.scanTicket(ticketDTO);
+        if (ticket == null) {
+            return Response.status(Response.Status.CONFLICT) // 409
+                    .entity("Ticket wurde bereits gescannt")
+                    .build();
+        }
+
+        return Response.status(Response.Status.CREATED).entity(ticket).build();
+    }
+
     @PUT
     @Path("/{id}")
     public Response updateTicketById(@PathParam("id") Long id, TicketDTO ticketDTO) {
